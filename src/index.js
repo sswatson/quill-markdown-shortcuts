@@ -153,7 +153,7 @@ class MarkdownShortcuts {
       },
      {
         name: 'formula',
-        pattern: /(?:\$)(.+?)(?:\$)/g,
+        pattern: /(?:math)(.+?)(?:endmath)/g,
         action: (text, selection, pattern, lineStart) => {
           let match = pattern.exec(text)
 
