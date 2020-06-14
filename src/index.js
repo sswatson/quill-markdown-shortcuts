@@ -151,6 +151,24 @@ class MarkdownShortcuts {
           }, 0)
         }
       },
+     {
+        name: 'formula',
+        pattern: /(?:$)(.+?)(?:$)/g,
+        action: (text, selection, pattern, lineStart) => {
+          let match = pattern.exec(text)
+
+          const annotatedText = match[0]
+          const matchedText = match[1]
+          const startIndex = lineStart + match.index
+
+          if (text.match(/^([*_ \n]+)$/g)) return
+
+          setTimeout(() => {
+            this.quill.deleteText(startIndex, annotatedText.length)
+            this.quill.insertEmbed(startIndex, 'formula', matchedText)
+          }, 0)
+        }
+      },
       {
         name: 'code',
         pattern: /(?:`)(.+?)(?:`)/g,
