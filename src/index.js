@@ -256,9 +256,7 @@ class MarkdownShortcuts {
         if (delta.ops[i].hasOwnProperty('insert')) {
           if (delta.ops[i].insert === ' ') {
             this.onSpace()
-          } else if (delta.ops[i].insert === '\n') {
-            this.onEnter()
-          }
+          } 
         }
       }
     })
@@ -283,24 +281,6 @@ class MarkdownShortcuts {
         const matchedText = text.match(match.pattern)
         if (matchedText) {
           // We need to replace only matched text not the whole line
-          match.action(text, selection, match.pattern, lineStart)
-          return
-        }
-      }
-    }
-  }
-
-  onEnter () {
-    let selection = this.quill.getSelection()
-    if (!selection) return
-    const [line, offset] = this.quill.getLine(selection.index)
-    const text = line.domNode.textContent + ' '
-    const lineStart = selection.index - offset
-    selection.length = selection.index++
-    if (this.isValid(text, line.domNode.tagName)) {
-      for (let match of this.matches) {
-        const matchedText = text.match(match.pattern)
-        if (matchedText) {
           match.action(text, selection, match.pattern, lineStart)
           return
         }

@@ -345,8 +345,6 @@ var MarkdownShortcuts = function () {
         if (delta.ops[i].hasOwnProperty('insert')) {
           if (delta.ops[i].insert === ' ') {
             _this.onSpace();
-          } else if (delta.ops[i].insert === '\n') {
-            _this.onEnter();
           }
         }
       }
@@ -398,51 +396,6 @@ var MarkdownShortcuts = function () {
           } finally {
             if (_didIteratorError) {
               throw _iteratorError;
-            }
-          }
-        }
-      }
-    }
-  }, {
-    key: 'onEnter',
-    value: function onEnter() {
-      var selection = this.quill.getSelection();
-      if (!selection) return;
-
-      var _quill$getLine3 = this.quill.getLine(selection.index),
-          _quill$getLine4 = _slicedToArray(_quill$getLine3, 2),
-          line = _quill$getLine4[0],
-          offset = _quill$getLine4[1];
-
-      var text = line.domNode.textContent + ' ';
-      var lineStart = selection.index - offset;
-      selection.length = selection.index++;
-      if (this.isValid(text, line.domNode.tagName)) {
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
-
-        try {
-          for (var _iterator2 = this.matches[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var match = _step2.value;
-
-            var matchedText = text.match(match.pattern);
-            if (matchedText) {
-              match.action(text, selection, match.pattern, lineStart);
-              return;
-            }
-          }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
-            }
-          } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
             }
           }
         }
