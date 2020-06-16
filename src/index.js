@@ -257,9 +257,9 @@ class MarkdownShortcuts {
         if (delta.ops[i].hasOwnProperty('insert')) {
           if (delta.ops[i].insert === ' ') {
             this.onSpace()
-          } else if (delta.ops[i].hasOwnProperty('delete') && source === 'user') {
-           this.onDelete()
           }
+        } else if (delta.ops[i].hasOwnProperty('delete') && source === 'user') {
+           this.onDelete()
         }
       }
     })
@@ -277,14 +277,23 @@ class MarkdownShortcuts {
     const selection = this.quill.getSelection()
     if (!selection) return
     const [line, offset] = this.quill.getLine(selection.index)
-    const text = line.domNode.textContent
     const lineStart = selection.index - offset
+    const rawText = this.quill.getText(lineStart, selection.index)
+    
+    // formulas count as a single character for insertion/deletion
+    // purposes, yet they don't show up the output of getText. 
+    // So we have to compensate: 
+    const delta = this.quill.getContents(lineStart, selection.index)
+    const numFormulas = delta.ops.filter(op => op.insert && op.insert.formula).length
+    const text = " ".repeat(numFormulas) + rawText
+    
     if (this.isValid(text, line.domNode.tagName)) {
       for (let match of this.matches) {
         const matchedText = text.match(match.pattern)
         if (matchedText) {
           // We need to replace only matched text not the whole line
           match.action(text, selection, match.pattern, lineStart)
+          console.log("Quill match made (" + match.name + ")");
           return
         }
       }
@@ -293,8 +302,7 @@ class MarkdownShortcuts {
  
    onDelete () {
      const range = this.quill.getSelection();
-     const format = this.quill.getFormat(range)
-
+     const format = this.quill.getFormat(range);
       if (format.blockquote || format.code || format['code-block']) {
        if (this.isLastBrElement(range) || this.isEmptyLine(range)) {
          this.quill.removeFormat(range.index, range.length);

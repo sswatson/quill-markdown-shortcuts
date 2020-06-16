@@ -347,9 +347,9 @@ var MarkdownShortcuts = function () {
         if (delta.ops[i].hasOwnProperty('insert')) {
           if (delta.ops[i].insert === ' ') {
             _this.onSpace();
-          } else if (delta.ops[i].hasOwnProperty('delete') && source === 'user') {
-            _this.onDelete();
           }
+        } else if (delta.ops[i].hasOwnProperty('delete') && source === 'user') {
+          _this.onDelete();
         }
       }
     });
@@ -371,8 +371,18 @@ var MarkdownShortcuts = function () {
           line = _quill$getLine2[0],
           offset = _quill$getLine2[1];
 
-      var text = line.domNode.textContent;
       var lineStart = selection.index - offset;
+      var rawText = this.quill.getText(lineStart, selection.index);
+
+      // formulas count as a single character for insertion/deletion
+      // purposes, yet they don't show up the output of getText. 
+      // So we have to compensate: 
+      var delta = this.quill.getContents(lineStart, selection.index);
+      var numFormulas = delta.ops.filter(function (op) {
+        return op.insert && op.insert.formula;
+      }).length;
+      var text = " ".repeat(numFormulas) + rawText;
+
       if (this.isValid(text, line.domNode.tagName)) {
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
@@ -386,6 +396,7 @@ var MarkdownShortcuts = function () {
             if (matchedText) {
               // We need to replace only matched text not the whole line
               match.action(text, selection, match.pattern, lineStart);
+              console.log("Quill match made (" + match.name + ")");
               return;
             }
           }
@@ -410,7 +421,6 @@ var MarkdownShortcuts = function () {
     value: function onDelete() {
       var range = this.quill.getSelection();
       var format = this.quill.getFormat(range);
-
       if (format.blockquote || format.code || format['code-block']) {
         if (this.isLastBrElement(range) || this.isEmptyLine(range)) {
           this.quill.removeFormat(range.index, range.length);
