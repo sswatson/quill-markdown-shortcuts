@@ -15395,7 +15395,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
           }, {
             name: 'hr',
-            pattern: /^([-*]\s?){3}/g,
+            pattern: /^(-\s?){3}/g,
             action: function action(text, selection) {
               var startIndex = selection.index - text.length;
               setTimeout(function () {

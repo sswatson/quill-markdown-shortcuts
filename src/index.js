@@ -192,7 +192,7 @@ class MarkdownShortcuts {
       },
       {
         name: 'hr',
-        pattern: /^([-*]\s?){3}/g,
+        pattern: /^(-\s?){3}/g,
         action: (text, selection) => {
           const startIndex = selection.index - text.length;
           setTimeout(() => {
