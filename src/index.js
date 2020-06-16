@@ -29,6 +29,7 @@ import Quill from 'quill';
 
 import HorizontalRule from './formats/hr';
 
+const Block = Quill.import('blots/block')
 
 Quill.register('formats/horizontal', HorizontalRule)
 
@@ -256,7 +257,9 @@ class MarkdownShortcuts {
         if (delta.ops[i].hasOwnProperty('insert')) {
           if (delta.ops[i].insert === ' ') {
             this.onSpace()
-          } 
+          } else if (delta.ops[i].hasOwnProperty('delete') && source === 'user') {
+           this.onDelete()
+          }
         }
       }
     })
@@ -287,6 +290,29 @@ class MarkdownShortcuts {
       }
     }
   }
+ 
+   onDelete () {
+     const range = this.quill.getSelection();
+     const format = this.quill.getFormat(range)
+
+      if (format.blockquote || format.code || format['code-block']) {
+       if (this.isLastBrElement(range) || this.isEmptyLine(range)) {
+         this.quill.removeFormat(range.index, range.length);
+       }
+     }
+   }
+
+    isLastBrElement (range) {
+     const [block] = this.quill.scroll.descendant(Block, range.index)
+     const isBrElement = block != null && block.domNode.firstChild instanceof HTMLBRElement
+     return isBrElement 
+   }
+
+    isEmptyLine (range) {
+     const [line] = this.quill.getLine(range.index)
+     const isEmpty = line.children.head.text.trim() === ""
+     return isEmpty
+   }
 }
 
 if (window.Quill) {
