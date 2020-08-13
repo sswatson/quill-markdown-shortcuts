@@ -178,7 +178,7 @@ var MarkdownShortcuts = function () {
       }
     }, {
       name: 'bolditalic',
-      pattern: /(?:\*){4}(.+?)(?:\*){4}/g,
+      pattern: /(?:\*){3}(.+?)(?:\*){3}/g,
       action: function action(text, selection, pattern, lineStart) {
         var match = pattern.exec(text);
 
@@ -196,7 +196,7 @@ var MarkdownShortcuts = function () {
       }
     }, {
       name: 'bold',
-      pattern: /(?:\*){3}(.+?)(?:\*){3}/g,
+      pattern: /(?:\*){2}(.+?)(?:\*){2}/g,
       action: function action(text, selection, pattern, lineStart) {
         var match = pattern.exec(text);
 
@@ -214,7 +214,7 @@ var MarkdownShortcuts = function () {
       }
     }, {
       name: 'italic',
-      pattern: /(?:\*){2}(.+?)(?:\*){2}/g,
+      pattern: /(?:\*){1}(.+?)(?:\*){1}/g,
       action: function action(text, selection, pattern, lineStart) {
         var match = pattern.exec(text);
 
@@ -250,7 +250,7 @@ var MarkdownShortcuts = function () {
       }
     }, {
       name: 'formula',
-      pattern: /(?:\$\$)(.+?)(?:\$\$)/g,
+      pattern: /(?:\$)(.+?)(?:\$)/g,
       action: function action(text, selection, pattern, lineStart) {
         var match = pattern.exec(text);
 
