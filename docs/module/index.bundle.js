@@ -15358,6 +15358,24 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
               }, 0);
             }
           }, {
+            name: 'displayformula',
+            pattern: /(?:\$\$)(.+?)(?:\$\$)/g,
+            action: function action(text, selection, pattern, lineStart) {
+              var match = pattern.exec(text);
+
+              var annotatedText = match[0];
+              var matchedText = match[1];
+              var startIndex = lineStart + match.index;
+
+              if (text.match(/^([*_ \n]+)$/g)) return;
+
+              setTimeout(function () {
+                _this.quill.deleteText(startIndex, annotatedText.length);
+                _this.quill.insertEmbed(startIndex, 'formula', matchedText);
+                _this.quill.insertText(startIndex + 1, '\n', 'align', 'center');
+              }, 0);
+            }
+          }, {
             name: 'formula',
             pattern: /(?:\$)(.+?)(?:\$)/g,
             action: function action(text, selection, pattern, lineStart) {
