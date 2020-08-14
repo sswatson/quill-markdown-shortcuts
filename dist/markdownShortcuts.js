@@ -463,6 +463,9 @@ var MarkdownShortcuts = function () {
           _quill$getLine4 = _slicedToArray(_quill$getLine3, 1),
           line = _quill$getLine4[0];
 
+      if (!line || !line.children || !line.children.head || !line.children.head.text || !line.children.head.text.trim) {
+        return true;
+      }
       var isEmpty = line.children.head.text.trim() === "";
       return isEmpty;
     }

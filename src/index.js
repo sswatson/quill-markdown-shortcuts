@@ -338,6 +338,13 @@ class MarkdownShortcuts {
 
     isEmptyLine (range) {
      const [line] = this.quill.getLine(range.index)
+     if (!line || 
+         !line.children ||
+         !line.children.head ||
+         !line.children.head.text ||
+         !line.children.head.text.trim) {
+           return true;
+         }
      const isEmpty = line.children.head.text.trim() === ""
      return isEmpty
    }
