@@ -15415,7 +15415,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             name: 'hr',
             pattern: /^(-\s?){3}/g,
             action: function action(text, selection) {
-              var startIndex = selection.index - text.length;
+              var startIndex = selection.index - text.length + 1;
               setTimeout(function () {
                 _this.quill.deleteText(startIndex, text.length);
 

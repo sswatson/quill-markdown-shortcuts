@@ -213,7 +213,7 @@ class MarkdownShortcuts {
         name: 'hr',
         pattern: /^(-\s?){3}/g,
         action: (text, selection) => {
-          const startIndex = selection.index - text.length;
+          const startIndex = selection.index - text.length + 1;
           setTimeout(() => {
             this.quill.deleteText(startIndex, text.length)
 
