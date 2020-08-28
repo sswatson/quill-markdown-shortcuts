@@ -15413,15 +15413,16 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
           }, {
             name: 'hr',
-            pattern: /^(-\s?){3}/g,
-            action: function action(text, selection) {
-              var startIndex = selection.index - text.length + 1;
+            pattern: /^(- ?){3}/g,
+            action: function action(text, selection, pattern) {
               setTimeout(function () {
-                _this.quill.deleteText(startIndex, text.length);
+                var matchedText = text.match(pattern)[0];
+                var startIndex = selection.index - matchedText.length;
+                _this.quill.deleteText(startIndex, matchedText.length);
 
-                _this.quill.insertEmbed(startIndex + 1, 'hr', true, _quill2.default.sources.USER);
-                _this.quill.insertText(startIndex + 2, "\n", _quill2.default.sources.SILENT);
-                _this.quill.setSelection(startIndex + 2, _quill2.default.sources.SILENT);
+                _this.quill.insertEmbed(startIndex, 'hr', true, _quill2.default.sources.USER);
+                _this.quill.insertText(startIndex + 1, "\n", _quill2.default.sources.SILENT);
+                _this.quill.setSelection(startIndex + 1, _quill2.default.sources.SILENT);
               }, 0);
             }
           }, {

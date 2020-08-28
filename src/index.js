@@ -211,15 +211,16 @@ class MarkdownShortcuts {
       },
       {
         name: 'hr',
-        pattern: /^(-\s?){3}/g,
-        action: (text, selection) => {
-          const startIndex = selection.index - text.length + 1;
+        pattern: /^(- ?){3}/g,
+        action: (text, selection, pattern) => {
           setTimeout(() => {
-            this.quill.deleteText(startIndex, text.length)
+            const matchedText = text.match(pattern)[0];
+            const startIndex = selection.index - matchedText.length
+            this.quill.deleteText(startIndex, matchedText.length)
 
-            this.quill.insertEmbed(startIndex + 1, 'hr', true, Quill.sources.USER);
-            this.quill.insertText(startIndex + 2, "\n", Quill.sources.SILENT);
-            this.quill.setSelection(startIndex + 2, Quill.sources.SILENT);
+            this.quill.insertEmbed(startIndex, 'hr', true, Quill.sources.USER);
+            this.quill.insertText(startIndex + 1, "\n", Quill.sources.SILENT);
+            this.quill.setSelection(startIndex + 1, Quill.sources.SILENT);
           }, 0)
         }
       },
