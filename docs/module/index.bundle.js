@@ -15413,7 +15413,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
           }, {
             name: 'hr',
-            pattern: /^(- ?){3}/g,
+            pattern: /^(-\s?){3}/g,
             action: function action(text, selection, pattern) {
               setTimeout(function () {
                 var matchedText = text.match(pattern)[0];

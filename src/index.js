@@ -211,7 +211,7 @@ class MarkdownShortcuts {
       },
       {
         name: 'hr',
-        pattern: /^(- ?){3}/g,
+        pattern: /^(-\s?){3}/g,
         action: (text, selection, pattern) => {
           setTimeout(() => {
             const matchedText = text.match(pattern)[0];
