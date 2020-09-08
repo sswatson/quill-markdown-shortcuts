@@ -15502,13 +15502,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             var rawText = this.quill.getText(lineStart, selection.index);
 
             // formulas count as a single character for insertion/deletion
-            // purposes, yet they don't show up the output of getText. 
-            // So we have to compensate: 
-            var delta = this.quill.getContents(lineStart, selection.index);
-            var numFormulas = delta.ops.filter(function (op) {
-              return op.insert && op.insert.formula;
-            }).length;
-            var text = " ".repeat(numFormulas) + rawText;
+            // purposes, yet they don't show up the output of getText.
+            // So we have to compensate:
+            // see https://github.com/quilljs/quill/blob/cb0fb6630a59aa8efff3e0d1caa6645e565d19bd/core/editor.js#L147
+            // for the implementation of getText, which is what we were using before here
+            var text = this.quill.getContents(lineStart, selection.index).filter(function (op) {
+              return typeof op.insert === 'string' || op.insert.formula;
+            }).map(function (op) {
+              return op.insert.formula ? " " : op.insert;
+            }).join('');
 
             if (this.isValid(text, line.domNode.tagName)) {
               var _iteratorNormalCompletion = true;

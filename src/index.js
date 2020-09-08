@@ -298,14 +298,17 @@ class MarkdownShortcuts {
     const [line, offset] = this.quill.getLine(selection.index)
     const lineStart = selection.index - offset
     const rawText = this.quill.getText(lineStart, selection.index)
-    
+
     // formulas count as a single character for insertion/deletion
-    // purposes, yet they don't show up the output of getText. 
-    // So we have to compensate: 
-    const delta = this.quill.getContents(lineStart, selection.index)
-    const numFormulas = delta.ops.filter(op => op.insert && op.insert.formula).length
-    const text = " ".repeat(numFormulas) + rawText
-    
+    // purposes, yet they don't show up the output of getText.
+    // So we have to compensate:
+    // see https://github.com/quilljs/quill/blob/cb0fb6630a59aa8efff3e0d1caa6645e565d19bd/core/editor.js#L147
+    // for the implementation of getText, which is what we were using before here
+    const text = this.quill.getContents(lineStart, selection.index)
+                           .filter(op => typeof op.insert === 'string' || op.insert.formula)
+                           .map(op => op.insert.formula ? " " : op.insert)
+                           .join('');
+
     if (this.isValid(text, line.domNode.tagName)) {
       for (let match of this.matches) {
         const matchedText = text.match(match.pattern)
@@ -318,7 +321,7 @@ class MarkdownShortcuts {
       }
     }
   }
- 
+
    onDelete () {
      const range = this.quill.getSelection();
      if (!range) return;
@@ -333,12 +336,12 @@ class MarkdownShortcuts {
     isLastBrElement (range) {
      const [block] = this.quill.scroll.descendant(Block, range.index)
      const isBrElement = block != null && block.domNode.firstChild instanceof HTMLBRElement
-     return isBrElement 
+     return isBrElement
    }
 
     isEmptyLine (range) {
      const [line] = this.quill.getLine(range.index)
-     if (!line || 
+     if (!line ||
          !line.children ||
          !line.children.head ||
          !line.children.head.text ||
