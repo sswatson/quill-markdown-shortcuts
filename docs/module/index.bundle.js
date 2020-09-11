@@ -15408,7 +15408,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 _this.quill.deleteText(startIndex, annotatedText.length);
                 _this.quill.insertText(startIndex, matchedText, { code: true });
                 _this.quill.format('code', false);
-                _this.quill.insertText(_this.quill.getSelection(), ' ');
               }, 0);
             }
           }, {

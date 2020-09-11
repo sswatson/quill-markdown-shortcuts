@@ -205,7 +205,6 @@ class MarkdownShortcuts {
             this.quill.deleteText(startIndex, annotatedText.length)
             this.quill.insertText(startIndex, matchedText, {code: true})
             this.quill.format('code', false)
-            this.quill.insertText(this.quill.getSelection(), ' ')
           }, 0)
         }
       },
