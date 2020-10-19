@@ -168,7 +168,7 @@ class MarkdownShortcuts {
 
           setTimeout(() => {
             this.quill.deleteText(startIndex, annotatedText.length)
-            this.quill.insertEmbed(startIndex, 'formula', matchedText)
+            this.quill.insertEmbed(startIndex, 'formula', '\\displaystyle ' + matchedText)
             this.quill.insertText(startIndex + 1, '\n', 'align', 'center')
           }, 0)
         }

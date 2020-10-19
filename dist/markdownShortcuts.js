@@ -263,7 +263,7 @@ var MarkdownShortcuts = function () {
 
         setTimeout(function () {
           _this.quill.deleteText(startIndex, annotatedText.length);
-          _this.quill.insertEmbed(startIndex, 'formula', matchedText);
+          _this.quill.insertEmbed(startIndex, 'formula', '\\displaystyle ' + matchedText);
           _this.quill.insertText(startIndex + 1, '\n', 'align', 'center');
         }, 0);
       }
