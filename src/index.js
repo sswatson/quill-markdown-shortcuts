@@ -206,7 +206,6 @@ class MarkdownShortcuts {
           setTimeout(() => {
             this.quill.deleteText(startIndex, annotatedText.length)
             this.quill.insertText(startIndex, matchedText, {code: true})
-            this.quill.format('code', false)
           }, 0)
         }
       },
