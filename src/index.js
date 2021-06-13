@@ -271,7 +271,7 @@ class MarkdownShortcuts {
     ]
 
     this.quill.keyboard.addBinding({ key: 9 }, () => this.onTab())
-    this.quill.keyboard.addBinding({ key: 9}, {format: ['code-block']}, () => this.onTab())
+
 
     // Handler that looks for insert deltas that match specific characters
     this.quill.on('text-change', (delta, oldContents, source) => {

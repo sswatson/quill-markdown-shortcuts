@@ -15470,9 +15470,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
           this.quill.keyboard.addBinding({ key: 9 }, function () {
             return _this.onTab();
           });
-          this.quill.keyboard.addBinding({ key: 9 }, { format: ['code-block'] }, function () {
-            return _this.onTab();
-          });
 
           // Handler that looks for insert deltas that match specific characters
           this.quill.on('text-change', function (delta, oldContents, source) {
