@@ -15467,10 +15467,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
           }];
 
-          this.quill.keyboard.addBinding({ key: 9 }, function () {
-            return _this.onTab();
+          this.quill.keyboard.bindings[9].unshift({
+            key: 9,
+            format: ['code-block'],
+            handler: function handler() {
+              return _this.onTab(true);
+            }
           });
-          this.quill.keyboard.addBinding({ key: 9 }, { format: ['code-block'] }, function () {
+          this.quill.keyboard.addBinding({ key: 9 }, function () {
             return _this.onTab();
           });
 
@@ -15496,8 +15500,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }, {
           key: 'onTab',
           value: function onTab() {
+            var codeBlock = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
             var selection = this.quill.getSelection();
-            if (!selection) return;
+            if (!selection) true;
 
             var _quill$getLine = this.quill.getLine(selection.index),
                 _quill$getLine2 = _slicedToArray(_quill$getLine, 2),
@@ -15511,25 +15517,23 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }).map(function (op) {
               return op.insert.formula ? " " : op.insert;
             }).join('');
-            if (this.isValid(text, line.domNode.tagName)) {
-              var j = 1;
-              while (j <= text.length) {
-                var idx = text.length - j;
-                if (text[idx] === ' ') {
-                  return true;
-                } else if (text[idx] === '\\') {
-                  var potentialMatch = text.slice(-j);
-                  if (_constants.tabCompletionMap.has(potentialMatch)) {
-                    var quillIndex = selection.index - j;
-                    this.quill.deleteText(quillIndex, j);
-                    this.quill.insertText(quillIndex, _constants.tabCompletionMap.get(potentialMatch));
-                    return false;
-                  } else {
-                    return true;
-                  }
+            var j = 1;
+            while (j <= text.length) {
+              var idx = text.length - j;
+              if (text[idx] === ' ') {
+                return true;
+              } else if (text[idx] === '\\') {
+                var potentialMatch = text.slice(-j);
+                if (_constants.tabCompletionMap.has(potentialMatch)) {
+                  var quillIndex = selection.index - j;
+                  this.quill.deleteText(quillIndex, j);
+                  this.quill.insertText(quillIndex, _constants.tabCompletionMap.get(potentialMatch));
+                  return false;
                 } else {
-                  j++;
+                  return true;
                 }
+              } else {
+                j++;
               }
             }
             return true;
@@ -15617,12 +15621,16 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
           key: 'isEmptyLine',
           value: function isEmptyLine(range) {
             var _quill$getLine5 = this.quill.getLine(range.index),
-                _quill$getLine6 = _slicedToArray(_quill$getLine5, 1),
-                line = _quill$getLine6[0];
+                _quill$getLine6 = _slicedToArray(_quill$getLine5, 2),
+                line = _quill$getLine6[0],
+                offset = _quill$getLine6[1];
 
             if (!line || !line.children || !line.children.head || !line.children.head.text || !line.children.head.text.trim) {
               return true;
             }
+            var lines = line.children.head.text.split('\n');
+            if (lines.length === 0) return true;
+            if (lines[0].trim() === "" && offset === 0) return true;
             var isEmpty = line.children.head.text.trim() === "";
             return isEmpty;
           }

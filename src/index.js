@@ -270,8 +270,12 @@ class MarkdownShortcuts {
       }
     ]
 
+    this.quill.keyboard.bindings[9].unshift({
+      key: 9,
+      format: ['code-block'],
+      handler: () => this.onTab(true),
+    });
     this.quill.keyboard.addBinding({ key: 9 }, () => this.onTab())
-    this.quill.keyboard.addBinding({ key: 9}, {format: ['code-block']}, () => this.onTab())
 
     // Handler that looks for insert deltas that match specific characters
     this.quill.on('text-change', (delta, oldContents, source) => {
@@ -295,9 +299,9 @@ class MarkdownShortcuts {
     )
   }
 
-  onTab() {
+  onTab(codeBlock=false) {
     const selection = this.quill.getSelection()
-    if (!selection) return
+    if (!selection) true
     const [line, offset] = this.quill.getLine(selection.index)
     const lineStart = selection.index - offset
 
@@ -305,25 +309,23 @@ class MarkdownShortcuts {
                            .filter(op => typeof op.insert === 'string' || op.insert.formula)
                            .map(op => op.insert.formula ? " " : op.insert)
                            .join('');
-    if (this.isValid(text, line.domNode.tagName)) {
-      let j = 1;
-      while (j <= text.length) {
-        const idx = text.length - j;
-        if (text[idx] === ' ') {
-          return true;
-        } else if (text[idx] === '\\') {
-          const potentialMatch = text.slice(-j);
-          if (tabCompletionMap.has(potentialMatch)) {
-            const quillIndex = selection.index-j;
-            this.quill.deleteText(quillIndex, j);
-            this.quill.insertText(quillIndex, tabCompletionMap.get(potentialMatch));
-            return false;
-          } else {
-            return true;
-          }
+    let j = 1;
+    while (j <= text.length) {
+      const idx = text.length - j;
+      if (text[idx] === ' ') {
+        return true
+      } else if (text[idx] === '\\') {
+        const potentialMatch = text.slice(-j)
+        if (tabCompletionMap.has(potentialMatch)) {
+          const quillIndex = selection.index - j
+          this.quill.deleteText(quillIndex, j)
+          this.quill.insertText(quillIndex, tabCompletionMap.get(potentialMatch))
+          return false
         } else {
-          j++;
+          return true;
         }
+      } else {
+        j++;
       }
     }
     return true;
@@ -375,15 +377,18 @@ class MarkdownShortcuts {
      return isBrElement
    }
 
-    isEmptyLine (range) {
-     const [line] = this.quill.getLine(range.index)
+   isEmptyLine (range) {
+     const [line, offset] = this.quill.getLine(range.index)
      if (!line ||
          !line.children ||
          !line.children.head ||
          !line.children.head.text ||
          !line.children.head.text.trim) {
-           return true;
+           return true
          }
+     const lines = line.children.head.text.split('\n')
+     if (lines.length === 0) return true
+     if (lines[0].trim() === "" && offset === 0) return true
      const isEmpty = line.children.head.text.trim() === ""
      return isEmpty
    }
